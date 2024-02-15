@@ -105,6 +105,7 @@ const DEFAULT_PRECEDENCE: PrecedenceList = {
     "%": 3, //Where Should Mod Be ?? I DO NOT KNOW 
     "exp" : 4,
     "log" : 1,
+    "!" : 5,
 };
 
 
@@ -197,6 +198,24 @@ class Parser {
         
     }
 
+    factorialExpression(){
+        // Emit the Factorial Bytecode, Enum of "OP_FACTORIAL"
+        this.parseExpression(DEFAULT_PRECEDENCE["!"]);
+
+        //Need Additional Logic for Factorial Expressions -> Why Does Mod Not Have This Issue??
+        this.bytecode.emitBytes(Opcode.OP_FACTORIAL);
+    }
+
+    previousIsUnary(){
+        if (this.current_token=== 0) return false;
+        let token = this.program[this.current_token-1];
+        
+        if(token.type === coinTypesValues['!']){
+            return true;
+        }
+        return false 
+    }
+
     logExpression(){
         // Log Expressions Will Begin Parsing with the Lowest Precedence
         // Pretty much consuming a (  -> Then calling with DEFAULT_PRECEDENCE equal to expression
@@ -258,11 +277,21 @@ class Parser {
     }
 
     parseExpression(precedence:number) {
+
+        //If Previous Is Unary, Only Advance if the next token is higher precedence
+        //If Previous Is Binary, Advance Always
+        if (this.previousIsUnary())
+        {
+            if (precedence <= this.precedence[this.program[this.current_token].value]){
+                this.current_token++;
+            }else {
+                return;
+            }
+        }
+
         this.current_token++; // <- This is the next token to evaluate
         let left = this.program[this.current_token-1]; //current token
         //console.log(this.current_token);
-        
-        // actual suffix operator
 
         if (left.type === coinTypesValues.const){
             this.Number();
@@ -279,6 +308,10 @@ class Parser {
 
         if(left.type === coinTypesValues['*']){
             this.mulExpression();
+        }
+        if (left.type === coinTypesValues['!']){
+            console.log("Factorial Expression")
+            this.factorialExpression();
         }
 
         if(left.type === coinTypesValues['/']){
@@ -309,6 +342,8 @@ class Parser {
         if(this.current_token >= this.program.length){
             return left;
         }
+
+        //Is It Different For Binary Expressions as Unary Expressions?
 
         let next_token = this.program[this.current_token];
 
@@ -347,6 +382,13 @@ class Parser {
                 this.parseExpression(this.precedence[next_token.value]);
                 
             }
+            if(next_token.value === "log"){
+                this.logExpression();
+            }
+            if(next_token.value === "!"){
+                this.factorialExpression();
+            }
+
             next_token = this.program[this.current_token];
 
             if(this.current_token >= this.program.length){

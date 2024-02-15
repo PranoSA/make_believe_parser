@@ -57,6 +57,13 @@ function runProgram(vm : VM){
                 vm.stack[vm.top-2] = vm.stack[vm.top-2] % vm.stack[vm.top - 1];
                 vm.top--;
                 break;
+            case Opcode.OP_FACTORIAL:
+                let result = 1;
+                for (let i = 1; i <= vm.stack[vm.top-1]; i++){
+                    result *= i;
+                }
+                vm.stack[vm.top-1] = result;
+                break;
             case Opcode.OP_CONST:
                 //Get The Operand
                 const operand_index = vm.program.code[vm.ip];
@@ -133,6 +140,12 @@ function genAST(vm :VM){
                 right = ASTStack.pop();
                 left = ASTStack.pop();
                 operator = "*";
+                ASTStack.push({ left, right, operator });
+                break;
+            case Opcode.OP_FACTORIAL:
+                right = ASTStack.pop();
+                left = undefined;
+                operator = "!";
                 ASTStack.push({ left, right, operator });
                 break;
             case Opcode.OP_DIV:
