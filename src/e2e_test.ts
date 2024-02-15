@@ -119,7 +119,7 @@ test_table.slice(0).forEach((program, index) => {
 
     const result = genAST(new_vm)
 
-    console.log(runAST(result[0]))
+console.log(runAST(result[0]))
 
     // Parse Tree And Find If the AST Lines Up
     //expected root = "*"
@@ -186,3 +186,50 @@ test_table.slice(0).forEach((program, index) => {
         console.log(new_vm.program);
     }
 })
+
+const testCase = "4+3*5-2+5/5"
+
+
+const custom_precedence2 = {
+    "*_precedence" : 4,
+    "/_precedence" : 2,
+    "+_precedence" : 3,
+    "-_precedence" : 5,
+    "%_precedence" : 3,
+}
+
+const expecectedOutput = 3.6; // 4 + 3*(5-2)+5/5 = 4 + 3*3 + 5/5 = 4 +9 + 5/5 = (4 +9+5)/5 = 18/5 = 3.6
+
+const tokens = Lexer(testCase);
+
+const parser = new Parser(tokens, custom_precedence2, 0);
+
+parser.beginParsing();
+
+// The Parser Will Change State, Now you need to pass the Bytecode and the Constants to the VM
+const new_vm :VM = {
+    stack : [],
+    top : 0,
+    program : parser.bytecode,
+    ip : 0,
+};
+
+//AST 
+//const result2 = genAST(new_vm)
+
+runProgram(new_vm);
+
+const result = new_vm.stack[new_vm.top-1];
+
+if (result === expecectedOutput) {
+    console.log("Test Passed");
+}
+
+else {
+    console.log("Test Failed");
+    console.log("Expected: ", expecectedOutput, "  GOT : ", result);
+    console.log(new_vm.stack);
+    console.log(new_vm.program);
+}
+
+

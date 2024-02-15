@@ -46,7 +46,7 @@ function runProgram(vm : VM){
                 vm.top--;
                 break;
             case Opcode.OP_SUB:
-                vm.stack[vm.top-2] = vm.stack[vm.top-1] - vm.stack[vm.top - 2];
+                vm.stack[vm.top-2] = vm.stack[vm.top-2] - vm.stack[vm.top - 1];
                 vm.top--;
                 break;
             case Opcode.OP_MUL:
@@ -54,11 +54,11 @@ function runProgram(vm : VM){
                 vm.top--;
                 break;
             case Opcode.OP_DIV:
-                vm.stack[vm.top-2] = vm.stack[vm.top-1] / vm.stack[vm.top - 2];
+                vm.stack[vm.top-2] = vm.stack[vm.top-2] / vm.stack[vm.top - 1];
                 vm.top--;
                 break;
             case Opcode.OP_MOD:
-                vm.stack[vm.top-2] = vm.stack[vm.top-1] % vm.stack[vm.top - 2];
+                vm.stack[vm.top-2] = vm.stack[vm.top-2] % vm.stack[vm.top - 1];
                 vm.top--;
                 break;
             case Opcode.OP_CONST:
