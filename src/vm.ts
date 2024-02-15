@@ -1,5 +1,6 @@
 
 import { Program} from './parse_code';
+import { Opcode } from './parse_code';
 
 type VM = {
     stack : number[],
@@ -17,16 +18,6 @@ function initVM(program:Program):VM {
     }
 }
 
-enum Opcode {
-    OP_ADD = 0x00,
-    OP_SUB = 0x01,
-    OP_MUL = 0x02,
-    OP_DIV = 0x03,
-    OP_MOD = 0x04,
-    OP_CONST = 0x05,
-    OP_EXP = 0x06,
-    OP_LOG = 0x07,
-}
 
 
 
@@ -82,7 +73,7 @@ function runProgram(vm : VM){
     return vm.stack[vm.top];
 }
 
-export type { VM, Program };
+export type { VM, Program, ASTBranch };
 export { initVM,  runProgram, Opcode, genAST, runAST };
 
 
@@ -119,6 +110,7 @@ function genAST(vm :VM){
         }
         vm.ip++;
         switch(opcode){
+            
             case Opcode.OP_ADD:
                 let rightAdd = ASTStack.pop();
                 let leftAdd = ASTStack.pop();
@@ -131,6 +123,12 @@ function genAST(vm :VM){
                 let left: ASTBranch | undefined;
                 let right: ASTBranch | undefined;
                 let operator: string;
+            case Opcode.OP_LOG:
+                right = ASTStack.pop();
+                left = ASTStack.pop();
+                operator = "log";
+                ASTStack.push({ left, right, operator });
+                break;
             case Opcode.OP_MUL:
                 right = ASTStack.pop();
                 left = ASTStack.pop();

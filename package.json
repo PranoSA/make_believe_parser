@@ -1,6 +1,6 @@
 {
   "name": "@pranosa/makebelieve_parse_precedence",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "\"Expression Parser and Executor with Variable Precedence Levels\"",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
