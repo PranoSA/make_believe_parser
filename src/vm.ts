@@ -209,6 +209,10 @@ function runAST(ast: ASTBranch|undefined): number {
         return parseInt(ast.operator);
     }
     switch (ast.operator) {
+        case "log":
+            return Math.log(runAST(ast.right));
+        case "!":
+            return runAST(ast.right);
         case "+":
             return runAST(ast.left) + runAST(ast.right);
         case "-":
