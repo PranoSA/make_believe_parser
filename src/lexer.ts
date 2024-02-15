@@ -10,7 +10,7 @@ enum coinTypesValues {
     "EOF"  ,
  }
 
-type Program = {
+type SourceCode = {
     code : string,
 }
 
@@ -98,6 +98,6 @@ function Lexer(program:string):Token[] {
     return tokens;
 }
 
-export type { Program, Token };
+export type { SourceCode, Token };
 
-    export { Lexer, coinTypesValues };
+export { Lexer, coinTypesValues };

@@ -27,5 +27,5 @@ const DEFAULT_PRECEDENCE: PrecedenceList = {
     "%": 3
 };
 
-export type { PrecedenceList };
-export { DEFAULT_PRECEDENCE };
+//export type { PrecedenceList };
+//export { DEFAULT_PRECEDENCE };

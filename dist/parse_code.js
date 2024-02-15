@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Opcode = exports.Parser = void 0;
+exports.Opcode = exports.Program = exports.Parser = void 0;
 var lexer_1 = require("./lexer");
+var buffer_1 = require("buffer");
 /*interface Program  {
     code : Buffer,
     constants : number[],
@@ -10,7 +11,7 @@ var lexer_1 = require("./lexer");
 }*/
 var Program = /** @class */ (function () {
     function Program() {
-        this.code = Buffer.alloc(25, 0xFF);
+        this.code = buffer_1.Buffer.alloc(25, 0xFF);
         this.constants = [];
         this.constant_top = 0;
         this.current_code_index = 0;
@@ -36,6 +37,7 @@ var Program = /** @class */ (function () {
     };
     return Program;
 }());
+exports.Program = Program;
 var Opcode;
 (function (Opcode) {
     Opcode[Opcode["OP_ADD"] = 0] = "OP_ADD";
@@ -46,6 +48,7 @@ var Opcode;
     Opcode[Opcode["OP_CONST"] = 5] = "OP_CONST";
     Opcode[Opcode["OP_EXP"] = 6] = "OP_EXP";
     Opcode[Opcode["OP_LOG"] = 7] = "OP_LOG";
+    Opcode[Opcode["OP_FACTORIAL"] = 8] = "OP_FACTORIAL";
 })(Opcode || (exports.Opcode = Opcode = {}));
 /**
     Precedence Operators for basic arithmetic operations
@@ -155,10 +158,7 @@ var Parser = /** @class */ (function () {
     Parser.prototype.parseExpression = function (precedence) {
         this.current_token++; // <- This is the next token to evaluate
         var left = this.program[this.current_token - 1]; //current token
-        console.log(this.current_token);
-        if (this.current_token >= this.program.length) {
-            return left;
-        }
+        //console.log(this.current_token);
         // actual suffix operator
         if (left.type === lexer_1.coinTypesValues.const) {
             this.Number();
@@ -186,6 +186,9 @@ var Parser = /** @class */ (function () {
             this.parseExpression(this.precedence[left.value]);
         }
         //this.current_token++;
+        if (this.current_token >= this.program.length) {
+            return left;
+        }
         var next_token = this.program[this.current_token];
         if (this.current_token >= this.program.length) {
             return left;

@@ -1,0 +1,18 @@
+{
+  "name": "@pranosa/makebelieve_parse_precedence",
+  "version": "0.0.1",
+  "description": "\"Expression Parser and Executor with Variable Precedence Levels\"",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "files" : [
+    "dist/"
+  ],
+  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "prepublishOnly": "npm run tsc"
+  },
+  "author": "PranoSA",
+  "license": "ISC"
+}

@@ -1,5 +1,6 @@
 import { Token } from './lexer';
 import { coinTypesValues } from './lexer';
+import { Buffer} from 'buffer';
 
 
 
@@ -77,6 +78,7 @@ enum Opcode {
     OP_CONST = 0x05,
     OP_EXP = 0x06,
     OP_LOG = 0x07,
+    OP_FACTORIAL = 0x08,
 }
 
 /**
@@ -319,5 +321,5 @@ using a pratt this
 
 
 
-export type { AST, Program};
-export { Parser,  PrecedenceList, Opcode, };
+export type { AST, PrecedenceArgument,PrecedenceList, };
+export { Parser,   Program, Opcode};
