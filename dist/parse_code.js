@@ -106,6 +106,10 @@ var Parser = /** @class */ (function () {
         }
     }
     // Start Looking for the EOF token
+    Parser.prototype.previousSymbolPrecedence = function () {
+        var token = this.program[this.current_token];
+        return this.precedence[token.value];
+    };
     Parser.prototype.beginParsing = function () {
         var token = this.program[this.current_token];
         this.expression();
@@ -116,30 +120,28 @@ var Parser = /** @class */ (function () {
     };
     Parser.prototype.addExpression = function () {
         // Emit the Add Bytecode, Enum of "OP_ADD"
-        this.current_token++;
-        this.parseExpression(DEFAULT_PRECEDENCE["+"]);
+        //this.parseExpression(DEFAULT_PE)
+        this.parseExpression(DEFAULT_PRECEDENCE["+"]); //Stop When Get to the Precedence of "+"
         this.bytecode.emitBytes(Opcode.OP_ADD);
+        // -> Goes to parsePrecedence, which will 
+        // 
     };
     Parser.prototype.subExpression = function () {
         // Emit the Sub Bytecode, Enum of "OP_SUB"
-        this.current_token++;
         this.parseExpression(DEFAULT_PRECEDENCE["-"]); //Finish Parsing until precedence is met 
         this.bytecode.emitBytes(Opcode.OP_SUB);
     };
     Parser.prototype.mulExpression = function () {
-        this.current_token++;
         // Emit the Mul Bytecode, Enum of "OP_MUL"
         this.parseExpression(DEFAULT_PRECEDENCE["*"]);
         this.bytecode.emitBytes(Opcode.OP_MUL);
     };
     Parser.prototype.divExpression = function () {
-        this.current_token++;
         // Emit the Div Bytecode, Enum of "OP_DIV"
         this.parseExpression(DEFAULT_PRECEDENCE["/"]);
         this.bytecode.emitBytes(Opcode.OP_DIV);
     };
     Parser.prototype.modExpression = function () {
-        this.current_token++;
         // Emit the Mod Bytecode, Enum of "OP_MOD"
         this.parseExpression(DEFAULT_PRECEDENCE["%"]);
         this.bytecode.emitBytes(Opcode.OP_MOD);
@@ -147,79 +149,78 @@ var Parser = /** @class */ (function () {
     Parser.prototype.Number = function () {
         // Emit the Number Bytecode, Enum of "OP_CONST"
         var token = this.program[this.current_token];
-        this.bytecode.emitConstant(parseInt(token.value));
+        //Essentially , No Lower Precedence
+        this.bytecode.emitConstant(parseInt(this.program[this.current_token - 1].value));
     };
     Parser.prototype.parseExpression = function (precedence) {
-        var left = this.program[this.current_token];
-        // If the token is a number, emit the constant
+        this.current_token++; // <- This is the next token to evaluate
+        var left = this.program[this.current_token - 1]; //current token
+        console.log(this.current_token);
+        if (this.current_token >= this.program.length) {
+            return left;
+        }
+        // actual suffix operator
         if (left.type === lexer_1.coinTypesValues.const) {
             this.Number();
-            this.current_token++;
+            //this.current_token++;
         }
-        //At the End of the program?? 
-        if (this.current_token >= this.program.length) {
-            return left;
-        }
-        //This is the Left Side of the Expression
-        //
-        //Emit Bytes ??
-        var token = this.program[this.current_token];
-        var infex_operator = token.value;
-        // No Way It Should Be a Number 
-        // Now Cal The Infix Operator ???
-        // Now Call the function based on the token
-        if (infex_operator === "+") {
+        if (left.type === lexer_1.coinTypesValues['+']) {
             this.addExpression();
         }
-        if (infex_operator === "-") {
+        if (left.type === lexer_1.coinTypesValues['-']) {
             this.subExpression();
         }
-        if (infex_operator === "*") {
+        if (left.type === lexer_1.coinTypesValues['*']) {
             this.mulExpression();
         }
-        if (infex_operator === "/") {
+        if (left.type === lexer_1.coinTypesValues['/']) {
             this.divExpression();
         }
-        if (infex_operator === "%") {
+        if (left.type === lexer_1.coinTypesValues['%']) {
             this.modExpression();
         }
-        if (infex_operator === "(") {
+        if (left.type === lexer_1.coinTypesValues['(']) {
             this.expression();
         }
-        if (infex_operator === ")") {
-            this.parseExpression(this.precedence[infex_operator]);
+        if (left.type === lexer_1.coinTypesValues[')']) {
+            this.parseExpression(this.precedence[left.value]);
         }
-        //Check if Finished the Program On Parse
+        //this.current_token++;
+        var next_token = this.program[this.current_token];
         if (this.current_token >= this.program.length) {
             return left;
         }
-        //What is the precendece we are testing ???
         while (precedence < this.precedence[this.program[this.current_token].value]) {
+            if (this.current_token >= this.program.length) {
+                return left;
+            }
             this.current_token++;
-            token = this.program[this.current_token];
-            // Now Call the function based on the token
-            if (token.value === "+") {
+            // Now Call the Infix Rule 
+            if (next_token.value === "+") {
                 this.addExpression();
             }
-            if (token.value === "-") {
+            if (next_token.value === "-") {
                 this.subExpression();
             }
-            if (token.value === "*") {
+            if (next_token.value === "*") {
                 this.mulExpression();
             }
-            if (token.value === "/") {
+            if (next_token.value === "/") {
                 this.divExpression();
             }
-            if (token.value === "%") {
+            if (next_token.value === "%") {
                 this.modExpression();
             }
-            if (token.value === "(") {
+            if (next_token.value === "(") {
                 this.expression();
             }
-            if (token.value === ")") {
-                this.parseExpression(this.precedence[token.value]);
+            if (next_token.value === ")") {
+                this.parseExpression(this.precedence[next_token.value]);
             }
-            this.parseExpression(this.precedence[token.value]);
+            next_token = this.program[this.current_token];
+            if (this.current_token >= this.program.length) {
+                return left;
+            }
         }
         return left;
     };
