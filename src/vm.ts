@@ -24,6 +24,8 @@ enum Opcode {
     OP_DIV = 0x03,
     OP_MOD = 0x04,
     OP_CONST = 0x05,
+    OP_EXP = 0x06,
+    OP_LOG = 0x07,
 }
 
 
@@ -41,6 +43,9 @@ function runProgram(vm : VM){
         }
         vm.ip++;
         switch(opcode){
+            case Opcode.OP_LOG:
+                vm.stack[vm.top-1] = Math.log(vm.stack[vm.top-1]);
+                break;
             case Opcode.OP_ADD:
                 vm.stack[vm.top-2] = vm.stack[vm.top-1] + vm.stack[vm.top - 2];
                 vm.top--;

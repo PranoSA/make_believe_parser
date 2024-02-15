@@ -100,11 +100,11 @@ const DEFAULT_PRECEDENCE: PrecedenceList = {
     "/": 3,
     "+": 2,
     "-": 2,
-    "(": 1,
-    ")": 1,
+    "(": 0,
+    ")": 0,
     "%": 3,
     "exp" : 4,
-    "log" : 4,
+    "log" : 0,
 };
 
 
@@ -183,6 +183,35 @@ class Parser {
         
     }
 
+    logExpression(){
+        // Log Expressions Will Begin Parsing with the Lowest Precedence
+        // Pretty much consuming a (  -> Then calling with DEFAULT_PRECEDENCE equal to expression
+        //Then consuming a ) at the end 
+        //Make sure a ( afterwards
+        console.log("Log Expression")
+        
+        //current token should be (
+        if(this.program[this.current_token].value === "("){
+            this.current_token++;
+        }
+        else {
+            throw new Error("Expected ( after log");
+        }
+
+        this.parseExpression(DEFAULT_PRECEDENCE["log"]);
+
+        // Now the current token should be )
+        if(this.program[this.current_token].value === ")"){
+            this.current_token++;
+        }
+        else {
+            throw new Error("Expected ) after log");
+        }
+
+        //Now Emit the Log Bytecode
+        this.bytecode.emitBytes(Opcode.OP_LOG);
+    }
+
     subExpression(){
         // Emit the Sub Bytecode, Enum of "OP_SUB"
         this.parseExpression(DEFAULT_PRECEDENCE["-"]); //Finish Parsing until precedence is met 
@@ -253,6 +282,10 @@ class Parser {
 
         if(left.type === coinTypesValues[')']){
             this.parseExpression(this.precedence[left.value]);
+        }
+
+        if(left.type === coinTypesValues['log']){
+            this.logExpression();
         }
 
         //this.current_token++;

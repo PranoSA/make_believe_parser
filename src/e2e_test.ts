@@ -135,6 +135,33 @@ console.log(runAST(result[0]))
     console.log(result);
 })
 
+//log
+const log_expression = "log(1+2*3)";
+const tokenslog = Lexer(log_expression);
+const parserlog = new Parser(tokenslog, {}, 0);
+parserlog.beginParsing();
+
+const new_vmlog :VM = {
+    stack : [],
+    top : 0,
+    program : parserlog.bytecode,
+    ip : 0,
+};
+
+runProgram(new_vmlog);
+
+const resultlog = new_vmlog.stack[new_vmlog.top-1];
+if (resultlog === Math.log(7)) {
+    console.log("Test Passed");
+}
+else {
+    console.log("Test Failed");
+    console.log("Expected: ", 2.1972245773362196, "  GOT : ", resultlog);
+    console.log(new_vmlog.stack);
+    console.log(new_vmlog.program);
+}
+
+
 const custom_precedence = {
     "*_precedence" : 1,
     "/_precedence" : 1,
