@@ -188,7 +188,6 @@ class Parser {
         // Pretty much consuming a (  -> Then calling with DEFAULT_PRECEDENCE equal to expression
         //Then consuming a ) at the end 
         //Make sure a ( afterwards
-        console.log("Log Expression")
         
         //current token should be (
         if(this.program[this.current_token].value === "("){
