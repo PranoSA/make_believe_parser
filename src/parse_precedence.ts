@@ -24,7 +24,8 @@ const DEFAULT_PRECEDENCE: PrecedenceList = {
     "-": 2,
     "(": 1,
     ")": 1,
-    "%": 3
+    "%": 3,
+    "!" : 1,
 };
 
 //export type { PrecedenceList };

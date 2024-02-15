@@ -1,6 +1,6 @@
 import { Lexer } from "./lexer";
 import {Parser} from "./parse_code";
-import { VM, runProgram } from "./vm";
+import { VM, runProgram, genAST, runAST } from "./vm";
 
 const test_table : string[] = [
     "1+2*3",
@@ -62,6 +62,78 @@ test_table.slice(0).forEach((program, index) => {
 /*
     Now Run Test with Custom Precedence
 */
+
+// Test AST Tree Generation Now
+
+const ast_test_table : string[] = [
+    "1+2*3",
+    "1*2+3",
+    "1+2*3+4",
+    "1*2+3*4",
+    "1+2*3*4",
+    "1*2+3+4",
+    "1+2*3+4*5",
+    "1*2+3*4+5*6",
+];
+
+const expected_ast : string[] = [
+    "1 + (2 * 3)",
+    "(1 * 2) + 3",
+    "1 + (2 * 3) + 4",
+    "(1 * 2) + (3 * 4)",
+    "1 + (2 * 3 * 4)",
+    "(1 * 2) + 3 + 4",
+    "1 + (2 * 3) + (4 * 5)",
+    "(1 * 2) + (3 * 4) + (5 * 6)",
+];
+
+// 1+(2*3)
+test_table.slice(0).forEach((program, index) => {
+    const tokens = Lexer(program);
+    const parser = new Parser(tokens, {}, 0);
+    parser.beginParsing();
+
+   // runProgram(parser.bytecode);
+
+    const new_vm : VM = {
+        stack : [],
+        top : 0,
+        program : parser.bytecode,
+        ip : 0,
+    }
+
+    /*runProgram(new_vm);
+
+    const result = new_vm.stack[new_vm.top-1];
+    if (result === expected_output[index]) {
+        console.log("Test Passed");
+    } else {
+        console.log(program)
+        console.log("Test Failed");
+        console.log("Expected: ", expected_output[index], "  GOT : ", result);
+        console.log(new_vm.stack);
+        console.log(new_vm.program);
+    }*/
+
+    //console.log(vm.stack[vm.top-1])
+
+    const result = genAST(new_vm)
+
+    console.log(runAST(result[0]))
+
+    // Parse Tree And Find If the AST Lines Up
+    //expected root = "*"
+
+    //console.log(result);
+    /*if (result === expected_ast[index]) {
+        console.log("Test Passed");
+    } else {
+        console.log(program)
+        console.log("Test Failed");
+        console.log("Expected: ", expected_ast[index], "  GOT : ", result);
+    }*/
+    console.log(result);
+})
 
 const custom_precedence = {
     "*_precedence" : 1,

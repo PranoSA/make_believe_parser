@@ -124,6 +124,7 @@ class Parser {
         };
 
         this.program = program;
+        //let DEFAULT_PRECEDENCE_COPY = JSON.parse(JSON.stringify(DEFAULT_PRECEDENCE));
         this.precedence = DEFAULT_PRECEDENCE;
         this.current_token = current_token;
         this.bytecode = new Program();

@@ -5,3 +5,4 @@ lib/*/**
 dist/
 dist/*.js
 .js
+node_modules/
