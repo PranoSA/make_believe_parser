@@ -102,9 +102,9 @@ const DEFAULT_PRECEDENCE: PrecedenceList = {
     "-": 2,
     "(": 0,
     ")": 0,
-    "%": 3,
+    "%": 3, //Where Should Mod Be ?? I DO NOT KNOW 
     "exp" : 4,
-    "log" : 0,
+    "log" : 1,
 };
 
 
@@ -245,7 +245,7 @@ class Parser {
 
     modExpression(){
         // Emit the Mod Bytecode, Enum of "OP_MOD"
-        this.parseExpression(DEFAULT_PRECEDENCE["%"]);
+        this.parseExpression(DEFAULT_PRECEDENCE["%"]); // Should Be Low 
         this.bytecode.emitBytes(Opcode.OP_MOD);
     }
 
@@ -286,6 +286,7 @@ class Parser {
         }
 
         if(left.type === coinTypesValues['%']){
+            console.log("Mod Expression")
             this.modExpression();
         }
 

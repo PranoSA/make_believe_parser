@@ -105,6 +105,7 @@ function Lexer(program:string):Token[] {
             tokens.push({ type: coinTypesValues["%"], value: char });
             current++;
             char = program[current];
+            console.log("Mod COin")
             continue;
         }
         
