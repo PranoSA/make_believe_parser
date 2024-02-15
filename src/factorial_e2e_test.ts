@@ -6,11 +6,12 @@ const factorialExpressions : string [] = [
     "1 +3! *5",
     "3! +4",
     "3! +4! + 5!",
+    "5!"
 ]
 
-const expectedOutput : number[] = [1 + 3*2*1*5, 3*2*1 + 4, 3*2*1 + 4*3*2*1 + 5*4*3*2*1];
+const expectedOutput : number[] = [1 + 3*2*1*5, 3*2*1 + 4, 3*2*1 + 4*3*2*1 + 5*4*3*2*1, 5*4*3*2*1];
 
-factorialExpressions.slice(0,1).forEach((expression, index) => {
+factorialExpressions.forEach((expression, index) => {
     const tokens = Lexer(expression);
     const parser = new Parser(tokens, {}, 0);
     parser.beginParsing();

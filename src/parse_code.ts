@@ -282,6 +282,9 @@ class Parser {
         //If Previous Is Binary, Advance Always
         if (this.previousIsUnary())
         {
+            if ( this.current_token >= this.program.length){
+                return ;
+            }
             if (precedence <= this.precedence[this.program[this.current_token].value]){
                 this.current_token++;
             }else {
