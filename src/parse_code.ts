@@ -169,7 +169,21 @@ class Parser {
 
     expression(){
         // begin parsePrecedence with lowest precedence
+        
         this.parseExpression(DEFAULT_PRECEDENCE.expression);
+        //Now Consume the ")"
+    }
+
+    grouping(){
+        // Emit the Grouping Bytecode, Enum of "OP_GROUPING"
+        this.parseExpression(DEFAULT_PRECEDENCE["("]);
+        //Now Consume the ")"
+        if(this.program[this.current_token].value === ")"){
+            this.current_token++;
+        }
+        else {
+            throw new Error("Expected ) at the end of expression");
+        }
     }
 
     addExpression(){
@@ -276,11 +290,14 @@ class Parser {
         }
 
         if(left.type === coinTypesValues['(']){
-            this.expression();
+            //Consume The Coin and Call Expression
+            this.grouping();
         }
 
         if(left.type === coinTypesValues[')']){
+            //Consume the Coin and current Precedence is 0?
             this.parseExpression(this.precedence[left.value]);
+            //Or don't do anything ??
         }
 
         if(left.type === coinTypesValues['log']){
