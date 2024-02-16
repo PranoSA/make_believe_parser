@@ -29,11 +29,12 @@ testTable.forEach((expression, index) => {
         program : parser.bytecode,
         ip : 0,
         program_states : [],
+        state_branch : [],
     };
     
-    runProgram(vm);
+    const result = runProgram(vm);
     
-    const result = vm.stack[vm.top-1];
+
     if (result === expectedOutput[index]) {
         console.log("Test Passed");
     }

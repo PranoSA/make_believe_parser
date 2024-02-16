@@ -45,10 +45,11 @@ test_table.slice(0).forEach((program, index) => {
         program : parser.bytecode,
         ip : 0,
         program_states : [],
+        state_branch : [],
     };
     
-    runProgram(new_vm);
-    const result = new_vm.stack[new_vm.top-1];
+    const result = runProgram(new_vm);
+
     if (result === expected_output[index]) {
         console.log("Test Passed");
     } else {
@@ -102,6 +103,7 @@ test_table.slice(0).forEach((program, index) => {
         program : parser.bytecode,
         ip : 0,
         program_states : [],
+        state_branch : [],
     }
 
     /*runProgram(new_vm);
@@ -149,11 +151,12 @@ const new_vmlog :VM = {
     program : parserlog.bytecode,
     ip : 0,
     program_states : [],
+    state_branch : [],
 };
 
-runProgram(new_vmlog);
+const resultlog = runProgram(new_vmlog);
 
-const resultlog = new_vmlog.stack[new_vmlog.top-1];
+
 if (resultlog === Math.log(7)) {
     console.log("Test Passed");
 }
@@ -201,11 +204,11 @@ test_table.slice(0).forEach((program, index) => {
         program : parser.bytecode,
         ip : 0,
         program_states : [],
+        state_branch : [],
     };
 
-    runProgram(new_vm);
+    const result = runProgram(new_vm);
 
-    const result = new_vm.stack[new_vm.top-1];
 
     if (result === expected_output_custom[index]) {
         console.log("Test Passed");
@@ -244,14 +247,14 @@ const new_vm :VM = {
     program : parser.bytecode,
     ip : 0,
     program_states : [],
+    state_branch : [],
 };
 
 //AST 
 //const result2 = genAST(new_vm)
 
-runProgram(new_vm);
+const result = runProgram(new_vm);
 
-const result = new_vm.stack[new_vm.top-1];
 
 if (result === expecectedOutput) {
     console.log("Test Passed");

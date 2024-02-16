@@ -17,6 +17,20 @@
             "-r",
             "ts-node/register"
         ],
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "ast test",
+        "program": "${workspaceFolder}/src/ast_test.ts",
+        "preLaunchTask": "tsc: build - tsconfig.json",
+        //"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+        "outFiles" : [],
+        "sourceMaps": true,
+        "runtimeArgs": [
+            "-r",
+            "ts-node/register"
+        ],
       }
     ]
   }
