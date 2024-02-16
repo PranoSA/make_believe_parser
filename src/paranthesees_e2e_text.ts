@@ -28,6 +28,7 @@ testTable.forEach((expression, index) => {
         top : 0,
         program : parser.bytecode,
         ip : 0,
+        program_states : [],
     };
     
     runProgram(vm);

@@ -44,6 +44,7 @@ test_table.slice(0).forEach((program, index) => {
         top : 0,
         program : parser.bytecode,
         ip : 0,
+        program_states : [],
     };
     
     runProgram(new_vm);
@@ -100,6 +101,7 @@ test_table.slice(0).forEach((program, index) => {
         top : 0,
         program : parser.bytecode,
         ip : 0,
+        program_states : [],
     }
 
     /*runProgram(new_vm);
@@ -146,6 +148,7 @@ const new_vmlog :VM = {
     top : 0,
     program : parserlog.bytecode,
     ip : 0,
+    program_states : [],
 };
 
 runProgram(new_vmlog);
@@ -197,6 +200,7 @@ test_table.slice(0).forEach((program, index) => {
         top : 0,
         program : parser.bytecode,
         ip : 0,
+        program_states : [],
     };
 
     runProgram(new_vm);
@@ -239,6 +243,7 @@ const new_vm :VM = {
     top : 0,
     program : parser.bytecode,
     ip : 0,
+    program_states : [],
 };
 
 //AST 

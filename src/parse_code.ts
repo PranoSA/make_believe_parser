@@ -79,6 +79,7 @@ enum Opcode {
     OP_EXP = 0x06,
     OP_LOG = 0x07,
     OP_FACTORIAL = 0x08,
+    OP_EOF = 0xFF,
 }
 
 /**

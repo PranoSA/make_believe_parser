@@ -1,4 +1,5 @@
 
+import { Token } from './lexer';
 import { Program} from './parse_code';
 import { Opcode } from './parse_code';
 
@@ -7,6 +8,7 @@ type VM = {
     top : number,
     program : Program,
     ip : number,
+    program_states? : VMSteps,
 }
 
 function initVM(program:Program):VM {
@@ -15,8 +17,19 @@ function initVM(program:Program):VM {
         top : 0,
         program,
         ip : 0,
+        program_states : [],
     }
 }
+
+type VMState = {
+    stack : number[],
+    constants : number[],
+    // Do I need an IP
+    // Lets Put the current token
+    currentToken : Opcode,
+}
+
+type VMSteps = VMState[];
 
 
 
@@ -25,8 +38,21 @@ function runProgram(vm : VM){
 
     //WHile The current instruction is not 0xFF
     let opcode = vm.program.code[vm.ip];
-
+    if(vm.program_states === undefined){
+        vm.program_states = [];
+    }
+    
     while(opcode !== 0xFF){
+        // Take Snapshot of VM State Here
+        let step : VMState = {
+            stack : [...vm.stack],
+            constants : [...vm.program.constants],
+            currentToken : opcode,
+        }
+        
+        vm.program_states.push(step);
+    
+        
         
         opcode = vm.program.code[vm.ip];
         if(opcode === 0xFF){
@@ -77,6 +103,11 @@ function runProgram(vm : VM){
                 throw new Error(`Unrecognized opcode: ${opcode}`);
         }
     }
+    vm.program_states.push({
+        stack : [...vm.stack],
+        constants : [...vm.program.constants],
+        currentToken : 0xFF,
+    })
     return vm.stack[vm.top];
 }
 
