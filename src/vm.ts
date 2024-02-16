@@ -111,7 +111,7 @@ function runProgram(vm : VM){
     return vm.stack[vm.top];
 }
 
-export type { VM, Program, ASTBranch };
+export type { VM, Program, ASTBranch, VMSteps, VMState};
 export { initVM,  runProgram, Opcode, genAST, runAST };
 
 
