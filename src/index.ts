@@ -11,3 +11,7 @@ export { runProgram, genAST, runAST , TreeForJS3} from './vm';
 export type { VM, ASTBranch as AstBranch, VMSteps, VMState, TreeForJs3 } from './vm';
 
 
+export * from './parsing_graph_edition'
+export * from './grammar_rules'
+
+
