@@ -156,7 +156,7 @@ function BNFGrammarExpressions(arg:PrecedenceArgument) : string[] {
     for (let i = 0; i < LevelOps.length; i++) {
         const level = LevelOps[i].map((v) => v.split("_precedence")[0]); //Remove the _precedence from the level
         const levelName = `Level${i + 1}`;
-        grammarRules.push(`<${levelName}> ::= Level${i+2} [ (${level.join(" | ")}) <Level${i+2}> ]*`);
+        grammarRules.push(`<${levelName}> ::= Level${i+2} [ (${level.join(" | ")}) <Level${i+1}> ]*`);
     }
 
     //Don't Have Negate Yet
