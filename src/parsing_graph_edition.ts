@@ -1,6 +1,8 @@
 import { ASTBranch } from "./vm";
 import { PrecedenceArgument , PrecedenceList} from "./parse_code";
 import { Token, coinTypesValues } from "./lexer";
+import { PrecedenceLevels } from "./grammar_rules";
+import { BNFGrammarExpressions } from "./grammar_rules";
 
 /**
 For Now, I am Only Got To Build a Graph, Rather than Actually Dumping the ByteCode
@@ -29,6 +31,8 @@ type ParseTreeBranch = {
    children:ParseTreeBranch[], //Since Root May Have Multiple Children
    operator:string,
    grammar_rule_depth:number,
+   string_representation:string,
+   matching_string:string,
 }
 
 // How do I do This -> I Need to know current precedence
@@ -39,6 +43,8 @@ const StartingNode:ParseTreeBranch = {
     children : [],
     operator : "",
     grammar_rule_depth : 0,
+    string_representation : "",
+    matching_string : "",
 }
 
 
@@ -58,8 +64,10 @@ function consumeParanthese(current_expression:Token[], current_token_parse:numbe
     return current_token_parse;
 }
 
-export function ParseNode(branch:ParseTreeBranch, precendenceLevels:coinTypesValues[][]){
+export function ParseNode(branch:ParseTreeBranch, precedenceArgs:PrecedenceArgument){
     // Use Current Expression To Parse To The Next Level
+    const precendenceLevels:coinTypesValues[][] = PrecedenceLevels(precedenceArgs)
+    const matchingStrings:string[] = BNFGrammarExpressions(precedenceArgs);
     
     //if Current grammar_rule_depth is 0, then look at the first level of precedence
     //if Current grammar_rule_depth is 1, then look at the second level of precedence
@@ -98,13 +106,75 @@ export function ParseNode(branch:ParseTreeBranch, precendenceLevels:coinTypesVal
                     children : [],
                     operator : branch.current_expression[current_token_parse].value,
                     grammar_rule_depth : branch.grammar_rule_depth + 1,
+                    string_representation :  branch.current_expression.slice(last_match, current_token_parse).map((token) => token.value).join(""),
+                    matching_string : ""// precendenceLevels[branch.grammar_rule_depth+1].map((type) => coinTypesValues[type]).join(""),
+                    //Matching Rule???
                 }
                 //So What it should Do Instead is to use the [last_match to current_token_parse]
                 //And Create a New Childd Based on That -> Unless its 0 ....
                 // Then update the current node ...
+
+                //If Binary Operator, The Left Side Shold Be Parsed at a grammar_rule_depth +1
+                //The RIght Side SHould be parsed at the current grammar_rule_depth
+                //And then it should return -> It sholdn't add any more children
+                //It should just return the current node
+                // Check if Binary Operator
+                
+                if(branch.current_expression[current_token_parse].value === "+" || branch.current_expression[current_token_parse].value === "-" || branch.current_expression[current_token_parse].value === "*" || branch.current_expression[current_token_parse].value === "/"){
+                    branch.operator = branch.current_expression[current_token_parse].value;
+                    const leftBranch = {
+                        current_expression : branch.current_expression.slice(last_match, current_token_parse),
+                        children : [],
+                        operator : "",
+                        grammar_rule_depth : branch.grammar_rule_depth + 1,
+                        string_representation :  branch.current_expression.slice(last_match, current_token_parse).map((token) => token.value).join(""),
+                        matching_string : matchingStrings[branch.grammar_rule_depth+1]
+                    }
+                    const rightBranch = {
+                        current_expression : branch.current_expression.slice(current_token_parse+1),
+                        children : [],
+                        operator : "",
+                        grammar_rule_depth : branch.grammar_rule_depth,
+                        string_representation :  branch.current_expression.slice(current_token_parse+1).map((token) => token.value).join(""),
+                        matching_string  : matchingStrings[branch.grammar_rule_depth]
+                    }
+                    ParseNode(leftBranch, precedenceArgs);
+                    ParseNode(rightBranch, precedenceArgs);
+                    branch.children.push(leftBranch);
+                    branch.children.push(rightBranch);
+                    return ;
+                }
+
+                //if ("(") -> Then 1 Child -> Split Betwen the Paranthesees
+                if(branch.current_expression[current_token_parse].type === coinTypesValues["("]){
+                    const child = {
+                        current_expression : branch.current_expression.slice(current_token_parse+1),
+                        children : [],
+                        operator : "",
+                        grammar_rule_depth : 0, //Reset to 0 -> Lowest One 
+                        string_representation :  branch.current_expression.slice(current_token_parse+1).map((token) => token.value).join(""),
+                        matching_string : matchingStrings[branch.grammar_rule_depth+1]
+                    }
+
+                    //assert last of child is ")"
+                    const last = child.current_expression.pop();
+
+                    if(last?.type !== coinTypesValues[")"]){
+                        console.log("Something is Wrong")
+                    }
+
+                    ParseNode(child, precedenceArgs);
+                    branch.children.push(child);
+                    return;
+                }
+
+                //If ! for example, it shold only parse a right branch...
+
+
+
                 branch.operator = branch.current_expression[current_token_parse].value;
                 if(newBranch.current_expression.length > 0){
-                    ParseNode(newBranch, precendenceLevels);
+                    ParseNode(newBranch, precedenceArgs);
                     branch.children.push(newBranch);
                 }
                 else {
@@ -132,11 +202,14 @@ export function ParseNode(branch:ParseTreeBranch, precendenceLevels:coinTypesVal
             children : [],
             operator : "",
             grammar_rule_depth : branch.grammar_rule_depth + 1,
+            string_representation :  branch.current_expression.slice(last_match, current_token_parse).map((token) => token.value).join(""),
+            matching_string : precendenceLevels[branch.grammar_rule_depth+1].map((type) => coinTypesValues[type]).join(""),
         }
+        
 
         if(newBranch.current_expression.length > 0){
             
-            ParseNode(newBranch, precendenceLevels);
+            ParseNode(newBranch, precedenceArgs);
 
             branch.children.push(newBranch);
 
@@ -144,6 +217,31 @@ export function ParseNode(branch:ParseTreeBranch, precendenceLevels:coinTypesVal
     }
 
 }
+
+/*function calculateFromNode(node:ParseTreeBranch):number{
+    //The Precendece List is Baked Into The Tree Structure
+    //So I Don't Need to Worry About That
+
+    //If the Node is a Leaf, It Should be a 'number'
+    //If the Node is a Branch, It Should be an Operator -> or '' - Although this doesn't work yet
+
+    // Check the Operator
+    if(node.operator === "+"){
+        return calculateFromNode(node.children[0]) + calculateFromNode(node.children[1]);
+    }
+    if(node.operator === "-"){
+        return calculateFromNode(node.children[0]) - calculateFromNode(node.children[1]);
+    }
+    if(node.operator === "*"){
+        return calculateFromNode(node.children[0]) * calculateFromNode(node.children[1]);
+    }
+    if(node.operator === "/"){
+        return calculateFromNode(node.children[0]) / calculateFromNode(node.children[1]);
+    }
+    if(node.operator.test(/\d+/)){
+        return parseInt(node.operator);
+    }
+}*/
 
 
 

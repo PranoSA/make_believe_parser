@@ -1,6 +1,6 @@
-import { Lexer } from "./lexer";
-import {Parser} from "./parse_code";
-import { VM, runProgram, genAST, runAST } from "./vm";
+import { Lexer } from "../lexer";
+import {Parser} from "../parse_code";
+import { VM, runProgram, genAST, runAST } from "../vm";
 
 const test_table : string[] = [
     "1+2*3",

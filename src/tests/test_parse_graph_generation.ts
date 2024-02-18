@@ -14,6 +14,8 @@ const StartingNode:ParseTreeBranch = {
     children : [],
     operator : "",
     grammar_rule_depth : 0,
+    string_representation : tokens.map((token) => token.value).join(""),
+    matching_string : tokens.map((token) => token.value).join(""),
 }
 
 const precedenceAdjuster:PrecedenceArgument = {
@@ -26,6 +28,42 @@ const precedenceAdjuster:PrecedenceArgument = {
 
 const precendenceLevels = PrecedenceLevels(precedenceAdjuster);
 
-const ParseTree = ParseNode(StartingNode, precendenceLevels);
+const ParseTree = ParseNode(StartingNode, precedenceAdjuster);
 
 console.log(ParseTree);
+
+
+const next_program = "1+2*3+4";
+
+const next_tokens = Lexer(next_program);
+
+const next_StartingNode:ParseTreeBranch = {
+    current_expression : next_tokens,
+    children : [],
+    operator : "",
+    grammar_rule_depth : 0,
+    string_representation : next_tokens.map((token) => token.value).join(""),
+    matching_string : next_tokens.map((token) => token.value).join(""),
+}
+
+
+const next_ParseTree = ParseNode(next_StartingNode, precedenceAdjuster);
+
+console.log(next_ParseTree);
+
+const par_program = "1+(2*3)+4";
+
+const par_tokens = Lexer(par_program);
+
+const par_StartingNode:ParseTreeBranch = {
+    current_expression : par_tokens,
+    children : [],
+    operator : "",
+    grammar_rule_depth : 0,
+    string_representation : par_tokens.map((token) => token.value).join(""),
+    matching_string : par_tokens.map((token) => token.value).join(""),
+}
+
+const par_ParseTree = ParseNode(par_StartingNode, precedenceAdjuster);
+
+console.log(par_ParseTree);

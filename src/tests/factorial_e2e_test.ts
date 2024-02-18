@@ -1,24 +1,17 @@
-import { Lexer } from "./lexer";
-import { Parser } from "./parse_code";
-import { VM, runProgram } from "./vm";
+import { Lexer } from "../lexer";
+import { Parser } from "../parse_code";
+import { VM, runProgram } from "../vm";
 
-
-const testTable : string[] = [
-    "(1+2)*3", // 9
-    "1*(2+3)", // 5 
-    "1+(2*3)", // 7
-    "5+3*4", // 17
-    "(5+3)*4", // 32
-    "5+(3*4)", // 17
-    "1 + 5 *3 +4 /9", // 
-    "(1+5)*(3+4)/9",
-    "1 + (5*3+4/9)",
-    "1 + 5*(3+4/9)",
+const factorialExpressions : string [] = [
+    "1 +3! *5",
+    "3! +4",
+    "3! +4! + 5!",
+    "5!"
 ]
 
-const expectedOutput : number[] = [9, 5, 7, 17, 32, 17, 1 + 5 *3 +4 /9, (1+5)*(3+4)/9, 1+ + (5*3+4/9),1 + 5*(3+4/9) ];
+const expectedOutput : number[] = [1 + 3*2*1*5, 3*2*1 + 4, 3*2*1 + 4*3*2*1 + 5*4*3*2*1, 5*4*3*2*1];
 
-testTable.forEach((expression, index) => {
+factorialExpressions.forEach((expression, index) => {
     const tokens = Lexer(expression);
     const parser = new Parser(tokens, {}, 0);
     parser.beginParsing();
@@ -30,11 +23,11 @@ testTable.forEach((expression, index) => {
         ip : 0,
         program_states : [],
         state_branch : [],
+        
     };
     
     const result = runProgram(vm);
     
-
     if (result === expectedOutput[index]) {
         console.log("Test Passed");
     }

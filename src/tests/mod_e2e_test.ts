@@ -1,6 +1,6 @@
-import { Lexer } from "./lexer";
-import { Opcode, Parser } from "./parse_code";
-import { VM, runProgram } from "./vm";
+import { Lexer } from "../lexer";
+import { Opcode, Parser } from "../parse_code";
+import { VM, runProgram } from "../vm";
 
 const expressions : string [] = [
     "5%3",

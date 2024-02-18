@@ -1,6 +1,6 @@
-import { Lexer, Token } from "./lexer"
-import { Parser } from "./parse_code"
-import { TreeForJS3, VM, genAST, runAST, runProgram } from "./vm"
+import { Lexer, Token } from "../lexer"
+import { Parser } from "../parse_code"
+import { TreeForJS3, VM, genAST, runAST, runProgram } from "../vm"
 
 const test_table: string[] = [
     "5*4-1",
