@@ -31,6 +31,34 @@
             "-r",
             "ts-node/register"
         ],
-      }
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "grammar gen test",
+        "program": "${workspaceFolder}/src/tests/test_grammar_rule_generation.ts",
+        "preLaunchTask": "tsc: build - tsconfig.json",
+        //"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+        "outFiles" : [],
+        "sourceMaps": true,
+        "runtimeArgs": [
+            "-r",
+            "ts-node/register"
+        ],
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "graph parse test",
+        "program": "${workspaceFolder}/src/tests/test_parse_graph_generation.ts",
+        "preLaunchTask": "tsc: build - tsconfig.json",
+        //"outFiles": ["${workspaceFolder}/dist/**/*.js"],
+        "outFiles" : [],
+        "sourceMaps": true,
+        "runtimeArgs": [
+            "-r",
+            "ts-node/register"
+        ],
+      },
     ]
   }
