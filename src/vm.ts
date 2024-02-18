@@ -161,7 +161,11 @@ function genAST(vm :VM){
             break;
         }
         vm.ip++;
+        let right: ASTBranch|undefined;
+        let left: ASTBranch|undefined;
+        let operator: string = "";
         switch(opcode){
+
             
             case Opcode.OP_ADD:
                 let rightAdd = ASTStack.pop();
@@ -172,10 +176,10 @@ function genAST(vm :VM){
                 vm.state_branch.push(next_branch);
                 break;
             case Opcode.OP_SUB:
-                let right = ASTStack.pop();
-                let left= ASTStack.pop();
+                right = ASTStack.pop();
+                left= ASTStack.pop();
                 
-                let operator: string = "-";
+                operator = "-";
                 next_branch = { left, right, operator };
                 ASTStack.push(next_branch);
                 vm.state_branch.push(next_branch);

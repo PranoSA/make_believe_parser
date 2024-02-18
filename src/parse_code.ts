@@ -95,6 +95,21 @@ enum Opcode {
     %
 */
 
+export function isUnaryOperator(token:Token){
+    if(token.type === coinTypesValues['!']){
+        return true;
+    }
+    return false;
+}
+
+export function isBinaryOperator(token:Token){
+    //+, -, *, /, %, exp, log
+    if(token.type === coinTypesValues['+'] || token.type === coinTypesValues['-'] || token.type === coinTypesValues['*'] || token.type === coinTypesValues['/'] || token.type === coinTypesValues['%']){
+        return true;
+    }
+    return false;
+}
+
 const DEFAULT_PRECEDENCE: PrecedenceList = {
     "expression" : 0,
     "*": 3,

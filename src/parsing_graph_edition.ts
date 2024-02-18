@@ -1,5 +1,5 @@
 import { ASTBranch } from "./vm";
-import { PrecedenceArgument , PrecedenceList} from "./parse_code";
+import { PrecedenceArgument , PrecedenceList, isUnaryOperator, isBinaryOperator} from "./parse_code";
 import { Token, coinTypesValues } from "./lexer";
 import { PrecedenceLevels } from "./grammar_rules";
 import { BNFGrammarExpressions } from "./grammar_rules";
@@ -169,7 +169,17 @@ export function ParseNode(branch:ParseTreeBranch, precedenceArgs:PrecedenceArgum
                 }
 
                 //If ! for example, it shold only parse a right branch...
-
+                if(isUnaryOperator(branch.current_expression[current_token_parse])){
+                    //One Branch
+                    const child : ParseTreeBranch = {
+                        current_expression : branch.current_expression.slice(current_token_parse+1),
+                        children : [],
+                        operator : "",
+                        grammar_rule_depth : branch.grammar_rule_depth,
+                        string_representation :  branch.current_expression.slice(current_token_parse+1).map((token) => token.value).join(""),
+                        matching_string : matchingStrings[branch.grammar_rule_depth+1]
+                    }
+                }   
 
 
                 branch.operator = branch.current_expression[current_token_parse].value;

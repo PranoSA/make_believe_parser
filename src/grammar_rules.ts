@@ -90,7 +90,8 @@ function PrecedenceLevels(arg:PrecedenceArgument) : coinTypesValues[][] {
         }); //Remove the _precedence from the level
         returnLevels.push(level);
     }
-
+    // Then the !
+    returnLevels.push([coinTypesValues["!"]]);
     returnLevels.push([coinTypesValues["const"], coinTypesValues["("]]);
     return returnLevels;
     
@@ -160,7 +161,10 @@ function BNFGrammarExpressions(arg:PrecedenceArgument) : string[] {
     }
 
     //Don't Have Negate Yet
-    grammarRules.push(`<Level${LevelOps.length + 1}> ::= [ <number> | '(' <expr> ')' |  <primary> ]`);
+    //For Factorial (Unary -> Highest Precedence Level -> Only Binds the Factor)
+    // 9 *5! = The Factorial Binds to the 5
+    grammarRules.push(`<Level${LevelOps.length + 1}> ::= [ <number> | '(' <expr> ')' | '-' <primary> ] ['!']`);
+    grammarRules.push(`<Level${LevelOps.length + 2}> ::= [ <number> | '(' <expr> ')' |  <primary> ]`);
 
     return grammarRules;
 

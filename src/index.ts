@@ -1,6 +1,3 @@
-import { PrecedenceArgument } from './parse_code';
-
-
 export {Lexer, coinTypesValues } from './lexer';
 export type { SourceCode , Token } from './lexer';
 
@@ -11,7 +8,8 @@ export { runProgram, genAST, runAST , TreeForJS3} from './vm';
 export type { VM, ASTBranch as AstBranch, VMSteps, VMState, TreeForJs3 } from './vm';
 
 
-export * from './parsing_graph_edition'
-export * from './grammar_rules'
+export {ParseNode, } from './parsing_graph_edition'
+export type {ParseTreeBranch} from './parsing_graph_edition'
+export { BNFGrammarExpressions, PrecedenceLevels } from './grammar_rules'
 
 
